@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITM Ride</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+
+        header {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            padding: 24px 32px;
+            text-align: center;
+        }
+        header h1 { font-size: 32px; margin-bottom: 6px; }
+        header p { font-size: 15px; opacity: 0.85; }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding: 40px 16px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            width: 220px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+        }
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .menu-card .icon { font-size: 48px; margin-bottom: 16px; }
+        .menu-card h2 { font-size: 20px; margin-bottom: 8px; color: #1a73e8; }
+        .menu-card p { font-size: 13px; color: #777; }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚌 ITM Ride</h1>
+    <p>Carpooling Universitario — Instituto Tecnológico Metropolitano</p>
+</header>
+
+<div class="menu">
+    <a href="usuarios.html" class="menu-card">
+        <div class="icon">👤</div>
+        <h2>Usuarios</h2>
+        <p>Gestiona los estudiantes registrados en el sistema</p>
+    </a>
+    <a href="viajes.html" class="menu-card">
+        <div class="icon">🗺️</div>
+        <h2>Viajes</h2>
+        <p>Consulta y publica viajes compartidos disponibles</p>
+    </a>
+</div>
+
+<footer>
+    ITM Ride © 2026 — Instituto Tecnológico Metropolitano
+</footer>
+
+</body>
+</html>
