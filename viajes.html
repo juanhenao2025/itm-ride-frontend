@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITM Ride - Viajes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+
+        header {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        header a { color: white; text-decoration: none; font-size: 22px; }
+        header h1 { font-size: 20px; }
+
+        .container { max-width: 960px; margin: 32px auto; padding: 0 16px; }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        }
+        .card h2 {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #1a73e8;
+            border-bottom: 2px solid #e8f0fe;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 13px; color: #555; font-weight: 600; }
+        .form-group input {
+            padding: 10px 14px;
+            border: 1.5px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: #fafafa;
+            transition: border 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #1a73e8;
+            background: white;
+        }
+
+        .btn {
+            padding: 11px 28px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: #1a73e8; color: white; }
+        .btn-secondary { background: #f0f2f5; color: #333; }
+        .btn-danger { background: #e53935; color: white; font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+        .btn-warning { background: #fb8c00; color: white; font-size: 12px; padding: 6px 14px; border-radius: 8px; }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+            font-weight: 500;
+        }
+        .alert-success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #43a047; }
+        .alert-error { background: #ffebee; color: #c62828; border-left: 4px solid #e53935; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th {
+            background: #e8f0fe;
+            padding: 11px 14px;
+            text-align: left;
+            font-size: 12px;
+            color: #1a73e8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        td { padding: 11px 14px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fbff; }
+
+        .cupos {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .actions { display: flex; gap: 6px; }
+        .empty { text-align: center; color: #aaa; padding: 24px; font-size: 14px; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            width: 520px;
+            max-width: 90%;
+        }
+        .modal h2 { font-size: 18px; color: #1a73e8; margin-bottom: 20px; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html">🏠</a>
+    <h1>🗺️ Gestión de Viajes</h1>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>➕ Publicar nuevo viaje</h2>
+        <div id="alert-crear" class="alert"></div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Origen</label>
+                <input type="text" id="v-origen" placeholder="Ej: Laureles">
+            </div>
+            <div class="form-group">
+                <label>Destino</label>
+                <input type="text" id="v-destino" placeholder="Ej: ITM Fraternidad">
+            </div>
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" id="v-fecha">
+            </div>
+            <div class="form-group">
+                <label>Hora</label>
+                <input type="time" id="v-hora">
+            </div>
+            <div class="form-group">
+                <label>Cupos disponibles</label>
+                <input type="number" id="v-cupos" placeholder="Ej: 3" min="1">
+            </div>
+            <div class="form-group">
+                <label>ID del conductor</label>
+                <input type="number" id="v-conductor" placeholder="Ej: 1">
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="crearViaje()">✅ Publicar viaje</button>
+    </div>
+
+    <div class="card">
+        <h2>🗺️ Lista de viajes disponibles</h2>
+        <div id="alert-lista" class="alert"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Cupos</th>
+                    <th>Conductor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-viajes"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal-overlay" id="modal-editar">
+    <div class="modal">
+        <h2>✏️ Editar Viaje</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Origen</label>
+                <input type="text" id="edit-origen">
+            </div>
+            <div class="form-group">
+                <label>Destino</label>
+                <input type="text" id="edit-destino">
+            </div>
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" id="edit-fecha">
+            </div>
+            <div class="form-group">
+                <label>Hora</label>
+                <input type="time" id="edit-hora">
+            </div>
+            <div class="form-group">
+                <label>Cupos</label>
+                <input type="number" id="edit-cupos" min="1">
+            </div>
+            <div class="form-group">
+                <label>ID del conductor</label>
+                <input type="number" id="edit-conductor">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="guardarEdicion()">💾 Guardar cambios</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API = 'http://localhost:8080/api/viajes';
+let editandoId = null;
+
+function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'alert alert-' + type;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3000);
+}
+
+async function cargarViajes() {
+    const res = await fetch(API);
+    const data = await res.json();
+    const tbody = document.getElementById('tabla-viajes');
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty">No hay viajes publicados aún</td></tr>';
+        return;
+    }
+    tbody.innerHTML = data.map(v => `
+        <tr>
+            <td><b>#${v.id}</b></td>
+            <td>${v.origen}</td>
+            <td>${v.destino}</td>
+            <td>${v.fecha}</td>
+            <td>${v.hora}</td>
+            <td><span class="cupos">💺 ${v.cupos} cupos</span></td>
+            <td>#${v.conductorId}</td>
+            <td class="actions">
+                <button class="btn btn-warning" onclick="abrirEditar(${v.id},'${v.origen}','${v.destino}','${v.fecha}','${v.hora}',${v.cupos},${v.conductorId})">✏️ Editar</button>
+                <button class="btn btn-danger" onclick="eliminarViaje(${v.id})">🗑️ Eliminar</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function crearViaje() {
+    const viaje = {
+        origen: document.getElementById('v-origen').value,
+        destino: document.getElementById('v-destino').value,
+        fecha: document.getElementById('v-fecha').value,
+        hora: document.getElementById('v-hora').value,
+        cupos: parseInt(document.getElementById('v-cupos').value),
+        conductorId: parseInt(document.getElementById('v-conductor').value)
+    };
+    if (!viaje.origen || !viaje.destino || !viaje.fecha) {
+        showAlert('alert-crear', '⚠️ Completa origen, destino y fecha', 'error');
+        return;
+    }
+    const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(viaje)
+    });
+    if (res.ok) {
+        showAlert('alert-crear', '✅ Viaje publicado exitosamente', 'success');
+        ['v-origen','v-destino','v-fecha','v-hora','v-cupos','v-conductor'].forEach(id => document.getElementById(id).value = '');
+        cargarViajes();
+    } else {
+        showAlert('alert-crear', '❌ Error al publicar viaje', 'error');
+    }
+}
+
+function abrirEditar(id, origen, destino, fecha, hora, cupos, conductorId) {
+    editandoId = id;
+    document.getElementById('edit-origen').value = origen;
+    document.getElementById('edit-destino').value = destino;
+    document.getElementById('edit-fecha').value = fecha;
+    document.getElementById('edit-hora').value = hora;
+    document.getElementById('edit-cupos').value = cupos;
+    document.getElementById('edit-conductor').value = conductorId;
+    document.getElementById('modal-editar').classList.add('active');
+}
+
+function cerrarModal() {
+    document.getElementById('modal-editar').classList.remove('active');
+    editandoId = null;
+}
+
+async function guardarEdicion() {
+    const viaje = {
+        origen: document.getElementById('edit-origen').value,
+        destino: document.getElementById('edit-destino').value,
+        fecha: document.getElementById('edit-fecha').value,
+        hora: document.getElementById('edit-hora').value,
+        cupos: parseInt(document.getElementById('edit-cupos').value),
+        conductorId: parseInt(document.getElementById('edit-conductor').value)
+    };
+    const res = await fetch(API + '/' + editandoId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(viaje)
+    });
+    if (res.ok) {
+        showAlert('alert-lista', '✅ Viaje actualizado exitosamente', 'success');
+        cerrarModal();
+        cargarViajes();
+    } else {
+        showAlert('alert-lista', '❌ Error al actualizar viaje', 'error');
+    }
+}
+
+async function eliminarViaje(id) {
+    if (!confirm('¿Seguro que deseas eliminar este viaje?')) return;
+    const res = await fetch(API + '/' + id, { method: 'DELETE' });
+    if (res.ok) {
+        showAlert('alert-lista', '✅ Viaje eliminado', 'success');
+        cargarViajes();
+    }
+}
+
+cargarViajes();
+</script>
+
+</body>
+</html>
